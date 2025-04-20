@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from 'express';
 
-export const responseTime = (requestStartTime: number): string => {
+export const requestResponseTime = (requestStartTime: number): string => {
     return `${Date.now() - requestStartTime}ms`;
 }
 
@@ -12,7 +13,7 @@ export const handleSuccessResponse = (request: Request, response: Response, data
     return response.status(200).json({
         status: 200,
         success: true,
-        responseTime: responseTime(startTime),
+        responseTime: requestResponseTime(startTime),
         message,
         data,
     });

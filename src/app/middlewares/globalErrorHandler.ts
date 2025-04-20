@@ -1,37 +1,46 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
-import { ApiError } from '../errors/ApiError';
-import { responseTime } from '../utils/responseUtils';
+import { TErrorSources } from '../types/error';
+import { ZodError } from 'zod';
+import handleZodError from '../errors/handleZodError';
+import { requestResponseTime } from '../utils/responseUtils';
+import { AppError } from '../errors/ApiError';
 
 export const globalErrorHandler: ErrorRequestHandler = (error, request: Request, response: Response, next: NextFunction) => {
 
     const startTime = request.requestStartTime as number;
 
-    // If it's an instance of ApiError, use the custom message and status code
-    if (error instanceof ApiError) {
-
-        const {
-            message,
-            source
-        } = error.errorDetails;  // Extracting message and source from errorDetails
-
-        return response.status(error.statusCode).json({
-            status: error.statusCode,
-            success: false,
-            responseTime: responseTime(startTime),
-            source: source || 'Unknown source',  // Fallback source
-            message: message || 'An error occurred',  // Fallback message
-        });
+    let statusCode = error.status || 500
+    let message = error.message || 'something went wrong'
+    let errorSources: TErrorSources = {
+        path: '',
+        message: ['something went wrong']
     }
 
-    // For other errors (e.g. server errors)
-    const statusCode = error.statusCode || 500;
-    const defaultMessage = 'Something went wrong!';
+    // Zod Errors
+    if (error instanceof ZodError) {
+        const simplifiedError = handleZodError(error);
+        statusCode = simplifiedError.status
+        message = simplifiedError.message
+        errorSources = simplifiedError.error
+    }
+    // Custom App error
+    else if (error instanceof AppError) {
+        message = error?.customError;
+        errorSources = {
+            path: 'APP',
+            message: [error?.message],
+        };
+    }
 
-    return response.status(statusCode).json({
-        status: statusCode,
+    // Response Global Error
+    response.status(statusCode).json({
+        responseTime: requestResponseTime(startTime),
         success: false,
-        responseTime: `${Date.now() - startTime}ms`,
-        message: error.message || defaultMessage,
+        status: statusCode,
+        message,
+        error: errorSources,
         stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
     });
+    return
 };
