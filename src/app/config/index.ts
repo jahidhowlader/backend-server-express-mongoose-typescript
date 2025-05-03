@@ -1,9 +1,5 @@
 import dotenv from 'dotenv';
-
-interface IConfig {
-    PORT: string | undefined;
-    DATABASE_URL: string | undefined;
-}
+import { IConfig } from '../types/error';
 
 dotenv.config();
 

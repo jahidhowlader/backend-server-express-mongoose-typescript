@@ -8,3 +8,8 @@ export type TGenericErrorResponse = {
     message: string;
     error: TErrorSources;
 };
+
+export interface IConfig {
+    PORT: string | undefined;
+    DATABASE_URL: string | undefined;
+}

@@ -2,7 +2,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { requestResponseTime } from '../utils/responseUtils';
 
-export const notFoundHandler = (request: Request, response: Response, next: NextFunction): void => {
+export const notFoundHandler = (
+    request: Request,
+    response: Response,
+    next: NextFunction
+): void => {
 
     const startTime = request.requestStartTime as number;
 
@@ -17,5 +21,6 @@ export const notFoundHandler = (request: Request, response: Response, next: Next
         },
         stack: '404 Page not found',
     });
+
     return
 };

@@ -6,7 +6,12 @@ export const requestResponseTime = (requestStartTime: number): string => {
 }
 
 // Generic success response utility function
-export const handleSuccessResponse = (request: Request, response: Response, data: any, message: string = 'Operation successful') => {
+export const handleSuccessResponse = (
+    request: Request,
+    response: Response,
+    data: any,
+    message: string = 'Operation successful'
+) => {
 
     const startTime = request.requestStartTime as number;
 

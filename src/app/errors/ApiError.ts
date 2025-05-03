@@ -1,8 +1,10 @@
 export class AppError extends Error {
+
     public status: number;
     public customError: string;
 
     constructor(status: number, customError: string, message: string, stack: string = "") {
+        
         // Enrich customError before calling super()
         const enrichedError = AppError.enrichErrorType(customError);
 
@@ -24,6 +26,7 @@ export class AppError extends Error {
     }
 
     private static enrichErrorType(original: string): string {
+        
         const stackLine = (new Error().stack || '').split('\n')[3];
         const match = stackLine.match(/([^\\/]+):(\d+):\d+$/);
 

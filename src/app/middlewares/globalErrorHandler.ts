@@ -6,7 +6,12 @@ import handleZodError from '../errors/handleZodError';
 import { requestResponseTime } from '../utils/responseUtils';
 import { AppError } from '../errors/ApiError';
 
-export const globalErrorHandler: ErrorRequestHandler = (error, request: Request, response: Response, next: NextFunction) => {
+export const globalErrorHandler: ErrorRequestHandler = (
+    error,
+    request: Request,
+    response: Response,
+    next: NextFunction
+) => {
 
     const startTime = request.requestStartTime as number;
 
@@ -42,5 +47,6 @@ export const globalErrorHandler: ErrorRequestHandler = (error, request: Request,
         error: errorSources,
         stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
     });
+    
     return
 };
